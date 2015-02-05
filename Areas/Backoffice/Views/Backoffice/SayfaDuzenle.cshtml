@@ -1,0 +1,451 @@
+﻿@{
+    ViewBag.Title = "Sayfa Düzenle";
+    Layout = "~/Areas/Backoffice/Views/Shared/_BackofficeMaster.cshtml";
+
+    string UrLang = Request.Url.Segments[4].TrimEnd('/');
+    var diller = Yeni_Panel_2015.Areas.Backoffice.Classes.GlobalQuery.Diller("ORDER BY ORDER_NUM ASC"); // Bu alanda where sorgusu gönderilebilir.
+    var listele = new List<Yeni_Panel_2015.Classes.Properties.Degiskenler>();
+    listele = Yeni_Panel_2015.Areas.Backoffice.Classes.Pages.SayfaListele(UrLang);
+
+    string id = Request.Url.Segments[3].TrimEnd('/');
+    string lang = Request.Url.Segments[4].TrimEnd('/');
+    var sayfa = Yeni_Panel_2015.Areas.Backoffice.Classes.Pages.SayfaGetir("WHERE LANG_ID='" + id + "' AND LANG_CODE='" + lang + "'");
+
+    var meta_tags = Yeni_Panel_2015.Areas.Backoffice.Classes.MetaTags.MetaTagGetir("WHERE PAGE_ID='" + id + "' AND LANG_CODE='" + lang + "'");
+
+    var ortamlar = Yeni_Panel_2015.Areas.Backoffice.Classes.MediaLibrary.Ortamlar("ORDER BY ORDER_NUM ASC");
+
+    var sayfaOrtam = Yeni_Panel_2015.Areas.Backoffice.Classes.Pages.SayfaOrtamGetir("WHERE PAGE_ID='"+id+"' ORDER BY ID DESC");   
+    
+
+    <script src="~/Scripts/jquery-1.8.2.min.js"></script>
+    <script src="/ckfinder/ckfinder.js"></script>
+    <script src="/ckeditor/ckeditor.js"></script>
+}
+
+<div class="page-content">
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                (@sayfa.PageName) <small>sayfa düzenle</small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb">
+
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="/Backoffice/Index">
+                        Başlangıç
+                    </a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="/Backoffice/Sayfalar">
+                        Sayfalar
+                    </a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="#">
+                        Sayfa Düzenle
+                    </a>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+    <!-- BEGIN PAGE CONTENT-->
+    <div class="row">
+        <div class="col-md-12">
+
+            <div class="tabbable tabbable-custom boxless tabbable-reversed">
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a href="#tab_0" data-toggle="tab">
+                            Genel
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#tab_1" data-toggle="tab">
+                            Seo
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#tab_2" data-toggle="tab" id="Ortam">
+                            Ortam Kütüphanesi
+                        </a>
+                    </li>
+                    @*<li>
+                        <a href="#tab_3" data-toggle="tab">
+                            2 Columns View Only
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#tab_4" data-toggle="tab">
+                            Row Seperated
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#tab_5" data-toggle="tab">
+                            Bordered
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#tab_6" data-toggle="tab">
+                            Row Stripped
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#tab_7" data-toggle="tab">
+                            Label Stripped
+                        </a>
+                    </li>*@
+                </ul>
+                @using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal" }))
+                {
+                    <div class="tab-content" style="margin-top:2px;">
+                        <div id="AjaxPostBack"></div>
+                        <!-- BEGIN FORM-->
+
+                        <div class="tab-pane active" id="tab_0">
+                            <div class="portlet box green ">
+
+                                <div class="portlet-title">
+                                    <div class="caption">
+                                        <i class="fa fa-reorder"></i>Sayfa Düzenle
+                                    </div>
+                                </div>
+                                <div class="portlet-body form">
+                                    <div class="form-body">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3">Dil Seçimi</label>
+                                            <div class="col-md-9">
+                                                <input id="SayfaID" name="SayfaID" value="@id" type="hidden" />
+                                                <input id="LangID" name="LangID" value="@sayfa.LANGID" type="hidden" />
+                                                <select class="form-control" name="Diller" id="Diller">
+                                                    @foreach (var item in diller)
+                                                    {
+                                                        if (UrLang.ToString() == item.LANGCODE)
+                                                        {
+                                                            <option value="@item.LANGCODE" selected="selected">@item.LANGNAME</option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="@item.LANGCODE">@item.LANGNAME</option>
+                                                        }
+                                                    }
+                                                </select>
+                                                <span class="help-block">
+                                                    Sadece varsayılan dil eklenecektir.
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3">Sayfa Konumlandırması</label>
+                                            <div class="col-md-9">
+                                                <select class="form-control select2_category" name="Kategori">
+                                                    <option value="0" selected="selected">-- Ana Kategori --</option>
+                                                    @foreach (var item in listele)
+                                                    {
+                                                        if (sayfa.CATID == item.ID)
+                                                        {
+                                                            <option value="@item.ID" selected="selected">@item.PageName.Replace("<strong>", "").Replace("</strong>", "")</option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="@item.ID">@item.PageName.Replace("<strong>", "").Replace("</strong>", "")</option>
+                                                        }
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3">Sayfa Adı</label>
+                                            <div class="col-md-9">
+                                                <input type="text" placeholder="örn: Hakkımızda" class="form-control" value="@sayfa.PageName" name="SayfaAdi" />
+                                                <span class="help-block">
+                                                    Oluşturacağınız sayfanın adı
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3">Sıra</label>
+                                            <div class="col-md-9">
+                                                <input type="number" placeholder="0" min="0" class="form-control" value="@sayfa.ORDERNUM" name="SiraNumarasi" />
+                                                <span class="help-block">
+                                                    Sayfanızın sıra numarası
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3">Sayfa İçeriği</label>
+                                            <div class="col-md-9">
+                                                <textarea name="sayfaIcerigi" id="editorSayfa" rows="10" cols="80">@MvcHtmlString.Create(sayfa.PageContent)</textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-actions fluid">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="col-md-offset-3 col-md-9">
+                                                    <button type="submit" class="btn green"><i class="fa fa-check"></i> Kaydet</button>
+                                                    <button type="button" class="btn default" onclick="window.location.href = '/Backoffice/Sayfalar';">Vazgeç</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="tab_1">
+                            <div class="portlet box green ">
+
+                                <div class="portlet-title">
+                                    <div class="caption">
+                                        <i class="fa fa-reorder"></i>Seo Ayarları
+                                    </div>
+                                </div>
+                                <div class="portlet-body form">
+                                    <div class="form-body">
+                                        <div class="form-group">
+                                            <label class="col-md-2 control-label">Meta Başlığı:</label>
+                                            <div class="col-md-10">
+                                                <input class="form-control maxlength-handler" name="MetaTitle" maxlength="100" placeholder="" value="@meta_tags.MetaTitle" type="text">
+                                                <span class="help-block">
+                                                    max 100 karakter
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-2 control-label">Anahtar Kelimeler:</label>
+                                            <div class="col-md-10">
+                                                <textarea class="form-control maxlength-handler" rows="8" name="MetaKeywords" maxlength="1000">@MvcHtmlString.Create(meta_tags.MetaKeywords)</textarea>
+                                                <span class="help-block">
+                                                    max 1000 karakter
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-2 control-label">Meta Açıklaması:</label>
+                                            <div class="col-md-10">
+                                                <textarea class="form-control maxlength-handler" rows="8" name="MetaDescription" maxlength="255">@MvcHtmlString.Create(meta_tags.MetaDescription)</textarea>
+                                                <span class="help-block">
+                                                    max 255 karakter
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="form-actions fluid">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="col-md-offset-3 col-md-9">
+                                                    <button type="submit" class="btn green"><i class="fa fa-check"></i> Kaydet</button>
+                                                    <button type="button" class="btn default" onclick="window.location.href = '/Backoffice/Sayfalar';">Vazgeç</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="tab_2">
+                            <div class="portlet box green ">
+
+                                <div class="portlet-title">
+                                    <div class="caption">
+                                        <i class="fa fa-reorder"></i>Ortam Kütüphanesi
+                                    </div>
+                                </div>
+                                <div class="portlet-body">
+                                    <div>
+                                        <h4 class="block">Mevcut Dosyalar</h4>
+                                        <div class="row">
+                                            @foreach (var item in sayfaOrtam)
+                                            {
+                                                var kutuphane = Yeni_Panel_2015.Areas.Backoffice.Classes.MediaLibrary.OrtamKutuphanesi("WHERE ID='" + item.MEDIAID + "'");
+
+                                                foreach (var file in kutuphane)
+                                                {
+
+                                                    if (Convert.ToInt32(item.SELECTED) == 1)
+                                                    {
+                                                        <div class="col-sm-12 col-md-2">
+                                                            <div class="thumbnail">
+                                                                <img data-src="holder.js/100%x200" src="/Uploads/upload/@file.FILE" alt="100%x200" style="width: 100%;  display: block;">
+                                                                <div class="caption">
+                                                                    <h3>@file.NAME</h3>
+                                                                    <p>
+                                                                        <a href="javascript:void(0)" onclick="Varsayilan('@item.ID','Sil');" class="btn red">
+                                                                            Kaldır
+                                                                        </a>
+                                                                        <a href="javascript:void(0)" onclick="Varsayilan('@item.ID','0');" class="btn blue">
+                                                                            <i class="fa fa-check"></i> Varsayılan
+                                                                        </a>
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="col-sm-2 col-md-2">
+                                                            <div class="thumbnail">
+                                                                <img data-src="holder.js/100%x200" src="/Uploads/upload/@file.FILE" alt="100%x200" style="width: 100%;  display: block;">
+                                                                <div class="caption">
+                                                                    <h3>@file.NAME</h3>
+                                                                    <p>
+                                                                        <a href="javascript:void(0)" onclick="Varsayilan('@item.ID','Sil');" class="btn red">
+                                                                            Kaldır
+                                                                        </a>
+                                                                        <a href="javascript:void(0)" onclick="Varsayilan('@item.ID','1');" class="btn default">
+                                                                            Varsayılan Yap
+                                                                        </a>
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    }
+
+                                                }
+
+                                            }      
+
+                                        </div>
+                                        <h4 class="block">Albümler</h4>
+                                        @foreach (var item in ortamlar)
+                                        {
+                                            <a class="btn red" data-toggle="modal" href="#@Yeni_Panel_2015.Classes.Functions.PageURL(item.MEDIANAME)">
+                                                @item.MEDIANAME
+                                            </a>
+                                        }
+                                    </div>
+                                    <div class="form-actions fluid">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="col-md-offset-3 col-md-9">
+                                                    <button type="submit" class="btn green"><i class="fa fa-check"></i> Kaydet</button>
+                                                    <button type="button" class="btn default" onclick="window.location.href = '/Backoffice/Sayfalar';">Vazgeç</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                }
+                <!-- END FORM-->
+            </div>
+        </div>
+    </div>
+    <!-- END PAGE CONTENT-->
+</div>
+@foreach (var item in ortamlar)
+{
+    var kutuphane = Yeni_Panel_2015.Areas.Backoffice.Classes.MediaLibrary.OrtamKutuphanesi("WHERE MEDIA_ID='" + item.ID + "' ORDER BY ORDER_NUM ASC");
+    var media_name = Yeni_Panel_2015.Classes.Functions.PageURL(item.MEDIANAME);
+
+    <div class="modal fade" id="@media_name" tabindex="-1" role="@media_name" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title">@item.MEDIANAME</h4>
+                </div>
+                <div class="modal-body" style="overflow:hidden">
+
+                    <div id="blockui_sample_3_1_element">
+
+                        @foreach (var dosya in kutuphane)
+                        {<div class="col-sm-12 col-md-4">
+                            <div class="thumbnail">
+                                <img src="/Uploads/upload/@dosya.FILE" style="height:98px !important"/>
+                                <input type="checkbox" name="@media_name" id="@media_name" value="@dosya.ID" />
+                            </div>
+                        </div>
+                        }
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn default" data-dismiss="modal">Kapat</button>
+                    <button type="button" class="btn blue" onclick="DosyaEkle('@media_name')">Ekle</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+    $(function () {
+        $('#Diller').change(function () {
+            var dil = $(this).val();
+            var id = window.location.pathname.split('/')[3];
+            window.location.href = '/Backoffice/SayfaDuzenle/' + id + '/' + dil;
+        });
+
+        $('form').submit(function () {
+
+            for (var form in CKEDITOR.instances)
+                CKEDITOR.instances[form].updateElement();
+
+            var formData = new FormData($(this)[0]);
+            $.ajax({
+                url: '@Url.Action("db_SayfaDuzenle", "Backoffice")',
+                type: 'POST',
+                data: formData,
+                async: false,
+                success: function (data) {
+                    $('#AjaxPostBack').html('').html(data);
+                },
+                cache: false,
+                contentType: false,
+                processData: false
+            });
+            return false;
+        });
+    });
+
+    function DosyaEkle(NAME) {
+
+        var pageID= $("#SayfaID").val();
+        var favorite = [];
+
+        $.each($("input[name='" + NAME + "']:checked"), function () {
+
+            favorite.push($(this).val());
+
+        });
+
+        $.post("/Backoffice/SayfaOrtamEkle", { ID: favorite.join(", "), PAGE_ID: pageID }, function (data) {
+
+            alert(data);
+            window.location.reload();
+        });
+
+    }
+
+    function Varsayilan(ID,ISLEM) {
+
+        var pageID = $("#SayfaID").val();
+        $.post("/Backoffice/OrtamVarsayilan", { ID: ID, ISLEM: ISLEM, PAGE_ID:pageID }, function (data) {
+
+            alert(data);
+            window.location.reload();
+        });
+    }
+</script>
+<script>
+
+    jQuery(document).ready(function () {
+
+        CKEDITOR.replace("editorSayfa");
+        CKFinder.setupCKEditor(null, "/ckfinder/");
+
+    });
+
+</script>

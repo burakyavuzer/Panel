@@ -1,0 +1,353 @@
+﻿@{
+    ViewBag.Title = "Ortam";
+    Layout = "~/Areas/Backoffice/Views/Shared/_BackofficeMaster.cshtml";
+    var url = "/Areas/Backoffice/Themes/";
+    var MediaID = HttpContext.Current.Request.Url.Segments[3].TrimEnd('/');
+    
+    var kutuphane = Yeni_Panel_2015.Areas.Backoffice.Classes.MediaLibrary.OrtamKutuphanesi("WHERE MEDIA_ID=" + MediaID + " ORDER BY ORDER_NUM ASC");
+}
+<script src="@MvcHtmlString.Create(url)assets/plugins/jquery-1.10.2.min.js" type="text/javascript"></script>
+<div class="page-content">
+    <div class="Modal-Burak">
+        Dosya Güncellendi!
+    </div>
+    <!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+    
+    <!-- /.modal -->
+    <!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+    <!-- BEGIN STYLE CUSTOMIZER -->
+    
+    <!-- END STYLE CUSTOMIZER -->
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Ortam <small>kütüphanesi</small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb">
+                
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="/Backoffice/">
+                        Başlangıç
+                    </a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="#">
+                        Ortam Kütüphanesi
+                    </a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="#">
+                        Kütüphane
+                    </a>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+    <!-- BEGIN PAGE CONTENT-->
+    <div class="row">
+        <div class="col-md-12">
+                <div class="portlet">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="fa fa-shopping-cart"></i>Dosya Ortamı
+                        </div>
+                        <div class="actions btn-set">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-danger">Diğer</button>
+                                <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown"><i class="fa fa-angle-down"></i></button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li>
+                                        <a href="#albumBosalt" data-toggle="modal">
+                                            Albümü Boşalt
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#albumSil" data-toggle="modal">
+                                            Albümü Sil
+                                        </a>
+                                    </li>
+                                    
+                                </ul>
+                            </div>
+                            <button type="button" name="back" onclick="window.history.go(-1); return false;" class="btn default"><i class="fa fa-angle-left"></i> Geri Dön</button>
+
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="tabbable">
+                            <ul class="nav nav-tabs">
+                               
+                                <li class="active">
+                                    <a href="#tab_images" data-toggle="tab">
+                                        Dosyalar
+                                    </a>
+                                </li>
+                                
+                            </ul>
+                            <div class="tab-content no-space">
+                                @using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                {
+
+                                <div class="tab-pane active" id="tab_images">
+                                    <div class="alert alert-success margin-bottom-10">
+                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+                                        <i class="fa fa-warning fa-lg"></i> Yükleyebileceğiniz dosya türleri .jpg/.jpeg/.png/.gif/.pdf/.doc vs.
+                                    </div>
+                                    <div id="tab_images_uploader_container" class="text-align-reverse margin-bottom-10">
+                                        <a id="DosyaYukle" href="javascript:;" onclick="yukle();" class="btn yellow">
+                                            <i class="fa fa-plus"></i> Dosyaları Seç
+                                        </a>
+                                        <input type="file" style="visibility:hidden; display:none;" maxlength="10" accept="image/*" multiple="multiple" id="fuResimlerUpload" name="fuResimlerUpload" />
+                                        <input id="Media_ID" name="Media_ID" value="@MediaID" type="hidden" />
+                                        <button class="btn green" onclick="$('form').ajaxSubmit();" type="submit"><i class="fa fa-share"></i> Dosyaları Yükle</button>
+                                    </div>
+                                    <div class="row">
+                                        <div id="tab_images_uploader_filelist" class="col-md-6 col-sm-12">
+                                        </div>
+                                    </div>
+                                    <table class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr role="row" class="heading">
+                                                <th width="8%">
+                                                    Dosya
+                                                </th>
+                                                <th width="25%">
+                                                    Yazı
+                                                </th>
+                                                <th width="8%">
+                                                    Sıra
+                                                </th>
+                                               
+                                                <th width="10%">
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in kutuphane)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <a href="/Uploads/upload/@item.FILE" class="fancybox-button" data-rel="fancybox-button">
+                                                            @if (item.FILE.Substring(item.FILE.Length - 4, 4) == ".pdf")
+                                                            {
+                                                                <img class="img-responsive" src="/Areas/Backoffice/Themes/assets/upload/pdf.jpg" alt="Pdf Dosyası">
+                                                            }
+                                                            else if (item.FILE.Substring(item.FILE.Length - 4, 4) == ".doc")
+                                                            {
+                                                                <img class="img-responsive" src="/Areas/Backoffice/Themes/assets/upload/word.jpg" alt="Word Dosyası">
+                                                            }
+                                                            else if (item.FILE.Substring(item.FILE.Length - 4, 4) == ".xls")
+                                                            {
+                                                                <img class="img-responsive" src="/Areas/Backoffice/Themes/assets/upload/excel.jpg" alt="Excel Dosyası">
+                                                            }
+                                                            else if (item.FILE.Substring(item.FILE.Length - 5, 5) == ".xlsx")
+                                                            {
+                                                                <img class="img-responsive" src="/Areas/Backoffice/Themes/assets/upload/excel.jpg" alt="Excel Dosyası">
+                                                            }
+                                                            else if (item.FILE.Substring(item.FILE.Length - 4, 4) == ".ppt")
+                                                            {
+                                                                <img class="img-responsive" src="/Areas/Backoffice/Themes/assets/upload/ppt.jpg" alt="Power Point Dosyası">
+                                                            }
+                                                            else if (item.FILE.Substring(item.FILE.Length - 4, 4) == ".jpg")
+                                                            {
+                                                                <img class="img-responsive" src="/Uploads/upload/@item.FILE" alt="Resim Dosyası">
+                                                            }
+                                                            else
+                                                            {
+                                                                <img class="img-responsive" src="/Uploads/upload/@item.FILE" alt="Resim Dosyası">
+                                                            }
+                                                        </a>
+                                                    </td>
+                                                    <td class="mediaName">
+                                                        <input type="text" class="form-control" name="media_@item.ID" id="media_@item.ID" data-id="@item.ID" value="@item.MEDIANAME">
+                                                    </td>
+                                                    <td class="orderName">
+                                                        <input type="text" class="form-control" name="order_@item.ID" id="order_@item.ID" data-id="@item.ID" value="@item.ORDERNUM">
+                                                    </td>
+
+                                                    <td>
+                                                        <a href="#dosyaSil" data-toggle="modal" class="btn default btn-sm">
+                                                            <i class="fa fa-times"></i> Sil
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            }
+                                            
+                                        </tbody>
+                                    </table>
+                                </div>                                
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+    <!-- END PAGE CONTENT-->
+</div>
+<div id="albumBosalt" class="modal fade" tabindex="-1" data-backdrop="albumBosalt" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Albüm</h4>
+            </div>
+            <div class="modal-body">
+            Albüm içerisindeki dosyalar silinecek! Emin misiniz?
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn default">Vazgeç</button>
+                <button type="button" data-dismiss="modal" onclick="AlbumIciniBosalt();" class="btn yellow">Boşalt</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="albumSil" class="modal fade" tabindex="-1" data-backdrop="albumSil" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Albüm Sil</h4>
+            </div>
+            <div class="modal-body">
+                Albüm ve bağlı dosyalar silinecek! Emin misiniz?
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn default">Vazgeç</button>
+                <button type="button" data-dismiss="modal" onclick="Albumsil();" class="btn red">Sil</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="dosyaSil" class="modal fade" tabindex="-1" data-backdrop="dosyaSil" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Dosya Sil</h4>
+            </div>
+            <div class="modal-body">
+                Dosya silinecek! Emin misiniz?
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn default">Vazgeç</button>
+                <button type="button" data-dismiss="modal" onclick="DosyaSil();" class="btn red">Sil</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END JAVASCRIPTS -->
+
+<script type="text/javascript">
+    function yukle()
+    {
+        $("#fuResimlerUpload").click();
+    }
+
+    function AlbumIciniBosalt() {
+        var id = @MediaID;
+        $.post("/Backoffice/AlbumIciniBosalt", { ID: id }, function (data) {
+
+            window.location.reload();
+        });
+    }
+
+    function Albumsil() {
+        var id = @MediaID;
+        $.post("/Backoffice/AlbumuSil", { ID: id }, function (data) {
+
+            window.location.href = '/Backoffice/Index';
+        });
+    }
+
+    var $brk = $.noConflict();
+
+    $brk(document).ready(function ()
+    {
+        $(".mediaName input").focusout(function () {
+
+            var id = $(this).attr("data-id");
+            var name = $(this).val();
+
+            $.post("/Backoffice/KutuphaneGuncelle", { ID: id, NAME: name }, function (data) {
+
+                if (data == "Başarılı!") {
+                    $(".Modal-Burak").css("display", "block");
+                    $(".Modal-Burak").fadeIn(100);
+
+                    setTimeout(function () {
+                        $(".Modal-Burak").css("display", "none");
+                        $(".Modal-Burak").fadeOut(100);
+                    }, 2000);
+                } else if (data == "Hata Var!") {
+                    alert("Hata Var!");
+                }
+
+            });
+        });
+
+        $(".orderName input").focusout(function () {
+
+            var id = $(this).attr("data-id");
+            var name = $(this).val();
+
+            $.post("/Backoffice/KutuphaneSiraGuncelle", { ID: id, NAME: name }, function (data) {
+
+                if (data == "Başarılı!") {
+                    $(".Modal-Burak").css("display", "block");
+                    $(".Modal-Burak").fadeIn(100);
+
+                    setTimeout(function () {
+                        $(".Modal-Burak").css("display", "none");
+                        $(".Modal-Burak").fadeOut(100);
+                    }, 2000);
+                } else if (data == "Hata Var!") {
+                    alert("Hata Var!");
+                }
+
+            });
+        });
+
+        $brk('#fuResimlerUpload').change(function (e)
+        {
+
+            fotograflar = null;
+            $brk('#tab_images_uploader_filelist').html("");
+            if (window.File && window.FileReader && window.FileList && window.Blob)
+            {
+                fotograflar = e.target.files;
+                for (var i = 0; i < fotograflar.length; i++)
+                {
+                    var fotograf = fotograflar[i];
+
+                    $brk('#tab_images_uploader_filelist').append("<div class='alert alert-warning added-files' id='uploaded_file'>" + fotograf.name + " </div>");
+                }
+            }
+        });
+
+        $brk('form').submit(function () {
+            var formData = new FormData($(this)[0]);
+            $brk.ajax({
+                url: '@Url.Action("db_OrtamKutuphanesiYukle", "Backoffice")',
+                type: 'POST',
+                data: formData,
+                async: false,
+                success: function (data) {
+                    window.location.reload();
+                },
+                cache: false,
+                contentType: false,
+                processData: false
+            });
+            return false;
+        });
+    });
+
+</script>

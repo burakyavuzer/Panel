@@ -1,0 +1,123 @@
+﻿@{
+    ViewBag.Title = "Sayfalar";
+    Layout = "~/Areas/Backoffice/Views/Shared/_BackofficeMaster.cshtml";
+    
+    string lang_code = HttpContext.Current.Session["panel_LANG"].ToString(); // Varsayılan dil'in kodu.
+    //var sayfalar = Yeni_Panel_2015.Areas.Backoffice.Classes.Pages.Sayfalar("WHERE LANG_CODE='"+lang_code+"' ORDER BY ORDER_NUM"); // Bu alanda where sorgusu gönderilebilir.
+    var sayfalar = new List<Yeni_Panel_2015.Classes.Properties.Degiskenler>();
+    sayfalar = Yeni_Panel_2015.Areas.Backoffice.Classes.Pages.SayfaListele("");
+}
+
+<div class="page-content">
+    
+    <!-- END STYLE CUSTOMIZER -->
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Tüm sayfalar
+            </h3>
+            <ul class="page-breadcrumb breadcrumb">
+                
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="/Backoffice/Index">
+                        Başlangıç
+                    </a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="#">
+                        İçerik Yönetimi
+                    </a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="#">
+                        Sayfalar
+                    </a>
+                </li>
+            </ul>
+            
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+    <!-- BEGIN PAGE CONTENT-->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN EXAMPLE TABLE PORTLET-->
+            <div class="portlet box blue">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-edit"></i>Sayfalar
+                    </div>                    
+                </div>
+                <div class="portlet-body">
+                    <div class="table-toolbar">
+                        <div class="btn-group">
+                            <button id="sample_editable_1_new" class="btn green" onclick="window.location.href = '/Backoffice/SayfaEkle';">
+                                Yeni Ekle <i class="fa fa-plus"></i>
+                            </button>
+                        </div>                        
+                    </div>
+                    <table class="table table-striped table-hover table-bordered" id="sample_editable_1">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Sayfa adı
+                                </th>
+                                <th>
+                                    Dil
+                                </th>
+                                <th>
+                                    Sıra
+                                </th>
+                                <th>
+                                    URL
+                                </th>
+                                <th>
+                                    Düzenle
+                                </th>
+                                <th>
+                                    Sil
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in sayfalar)
+                            {
+                                <tr>
+                                    <td>
+                                        @MvcHtmlString.Create(item.PageName)
+                                    </td>
+                                    <td>
+                                        @MvcHtmlString.Create(item.LANGCODE)
+                                    </td>
+                                    <td>
+                                        @MvcHtmlString.Create(item.ORDERNUM)
+                                    </td>
+                                    <td class="center">
+                                        @MvcHtmlString.Create(item.PAGEURL)
+                                    </td>
+                                    <td>
+                                        <a class="edit" onclick="window.location.href='/Backoffice/SayfaDuzenle/@item.ID/@lang_code/';">
+                                            Düzenle
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a class="delete" href="javascript:;">
+                                            Sil
+                                        </a>
+                                    </td>
+                                </tr>
+                            }                                                      
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- END EXAMPLE TABLE PORTLET-->
+        </div>
+    </div>
+    <!-- END PAGE CONTENT -->
+</div>

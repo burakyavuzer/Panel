@@ -1,0 +1,240 @@
+﻿@{
+    ViewBag.Title = "Site Ayarları";
+    Layout = "~/Areas/Backoffice/Views/Shared/_BackofficeMaster.cshtml";
+
+    var diller = Yeni_Panel_2015.Areas.Backoffice.Classes.GlobalQuery.Diller("ORDER BY ORDER_NUM ASC"); // Bu alanda where sorgusu gönderilebilir.
+    var ortamlar = Yeni_Panel_2015.Areas.Backoffice.Classes.MediaLibrary.Ortamlar("ORDER BY ORDER_NUM ASC");    
+    var ayarlar= Yeni_Panel_2015.Areas.Backoffice.Classes.Settings.AyarlariGetir("");
+    
+    <script src="~/Scripts/jquery-1.8.2.min.js"></script>
+    <script src="/ckfinder/ckfinder.js"></script>
+    <script src="/ckeditor/ckeditor.js"></script>
+}
+
+<div class="page-content">
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Site Ayarları <small>düzenle</small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb">
+
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="/Backoffice/Index">
+                        Başlangıç
+                    </a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="#">
+                        Site Ayarları
+                    </a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+    <!-- BEGIN PAGE CONTENT-->
+    <div class="row">
+        <div class="col-md-12">
+
+            <div class="tabbable tabbable-custom boxless tabbable-reversed">
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a href="#tab_0" data-toggle="tab">
+                            Genel
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#tab_1" data-toggle="tab">
+                            Seo
+                        </a>
+                    </li>
+                </ul>
+                @using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal" }))
+                {
+                    <div class="tab-content" style="margin-top:2px;">
+                        <div id="AjaxPostBack"></div>
+                        <!-- BEGIN FORM-->
+
+                        <div class="tab-pane active" id="tab_0">
+                            <div class="portlet box green ">
+
+                                <div class="portlet-title">
+                                    <div class="caption">
+                                        <i class="fa fa-reorder"></i>Site Ayarları Düzenle
+                                    </div>
+                                </div>
+                                <div class="portlet-body form">
+                                    <div class="form-body">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3">Varsayılan Dil</label>
+                                            <div class="col-md-9">
+                                                <select class="form-control" name="Diller" id="Diller">
+                                                    @foreach (var item in diller)
+                                                    {
+                                                        if (ayarlar.LANGCODE == item.LANGCODE)
+                                                        {
+                                                            <option value="@item.LANGCODE" selected="selected">@item.LANGNAME</option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="@item.LANGCODE">@item.LANGNAME</option>
+                                                        }
+                                                    }
+                                                </select>
+                                                <span class="help-block">
+                                                    Web sitenizin açılış dili
+                                                </span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3">İşletme Adı</label>
+                                            <div class="col-md-9">
+                                                <input type="text" placeholder="örn: Boğaziçi Medya İnternet A.Ş." class="form-control" value="@ayarlar.STORE" name="IsletmeAdi" />
+                                                <span class="help-block">
+                                                    İşletmenizin adı
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3">Slider Seçimi</label>
+                                            <div class="col-md-9">
+                                                <select class="form-control" name="Slider" id="Slider">
+                                                    @foreach (var item in ortamlar)
+                                                    {
+                                                        if (ayarlar.SLIDER == item.ID)
+                                                        {
+                                                            <option value="@item.ID" selected="selected">@item.MEDIANAME</option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="@item.ID">@item.MEDIANAME</option>
+                                                        }
+                                                    }
+                                                </select>
+                                                <span class="help-block">
+                                                    Web sitenizin bannerı
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-actions fluid">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="col-md-offset-3 col-md-9">
+                                                    <button type="submit" class="btn green"><i class="fa fa-check"></i> Kaydet</button>
+                                                    <button type="button" class="btn default" onclick="window.location.href = '/Backoffice/Sayfalar';">Vazgeç</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="tab_1">
+                            <div class="portlet box green ">
+
+                                <div class="portlet-title">
+                                    <div class="caption">
+                                        <i class="fa fa-reorder"></i>Seo Ayarları
+                                    </div>
+                                </div>
+                                <div class="portlet-body form">
+                                    <div class="form-body">
+                                        <div class="form-group">
+                                            <label class="col-md-2 control-label">Meta Başlığı:</label>
+                                            <div class="col-md-10">
+                                                <input class="form-control maxlength-handler" name="MetaTitle" maxlength="100" placeholder="" value="@ayarlar.MetaTitle" type="text">
+                                                <span class="help-block">
+                                                    max 100 karakter
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-2 control-label">Anahtar Kelimeler:</label>
+                                            <div class="col-md-10">
+                                                <textarea class="form-control maxlength-handler" rows="8" name="MetaKeywords" maxlength="1000">@ayarlar.MetaKeywords</textarea>
+                                                <span class="help-block">
+                                                    max 1000 karakter
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-2 control-label">Meta Açıklaması:</label>
+                                            <div class="col-md-10">
+                                                <textarea class="form-control maxlength-handler" rows="8" name="MetaDescription" maxlength="255">@ayarlar.MetaDescription</textarea>
+                                                <span class="help-block">
+                                                    max 255 karakter
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="form-actions fluid">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="col-md-offset-3 col-md-9">
+                                                    <button type="submit" class="btn green"><i class="fa fa-check"></i> Kaydet</button>
+                                                    <button type="button" class="btn default" onclick="window.location.href = '/Backoffice/Sayfalar';">Vazgeç</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+
+                    </div>
+                }
+                <!-- END FORM-->
+            </div>
+        </div>
+    </div>
+    <!-- END PAGE CONTENT-->
+</div>
+
+<script>
+    $(function () {
+
+        $('form').submit(function () {
+
+            for (var form in CKEDITOR.instances)
+                CKEDITOR.instances[form].updateElement();
+
+            var formData = new FormData($(this)[0]);
+            $.ajax({
+                url: '@Url.Action("db_SiteAyarlariDuzenle", "Backoffice")',
+                type: 'POST',
+                data: formData,
+                async: false,
+                success: function (data) {
+                    $('#AjaxPostBack').html('').html(data);
+                },
+                cache: false,
+                contentType: false,
+                processData: false
+            });
+            return false;
+        });
+    });
+
+</script>
+<script>
+
+    jQuery(document).ready(function () {
+
+        CKEDITOR.replace("editorSayfa");
+        CKFinder.setupCKEditor(null, "/ckfinder/");
+
+    });
+
+</script>
+

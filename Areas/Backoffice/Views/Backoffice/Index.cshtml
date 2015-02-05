@@ -1,0 +1,98 @@
+﻿@{
+    ViewBag.Title = "Başlangıç";
+    Layout = "~/Areas/Backoffice/Views/Shared/_BackofficeMaster.cshtml";
+}
+
+<div class="page-content">
+    <!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+    
+    <!-- /.modal -->
+    <!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+    <!-- BEGIN PAGE HEADER-->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Başlangıç <small>web site yönetim paneli</small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb">
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="/Backoffice/Index">
+                        Başlangıç
+                    </a>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+    <!-- BEGIN DASHBOARD STATS -->
+    <div class="row">
+        
+        <div class="tiles">
+            <div class="tile bg-blue" style="margin-left:15px;" onclick="window.location.href = '/Backoffice/Sayfalar';">
+                <div class="tile-body">
+                    <i class="fa fa fa-file-text"></i>
+                </div>
+                <div class="tile-object">
+                    <div class="name">
+                        Sayfalar
+                    </div>
+                    <div class="number">
+                    </div>
+                </div>
+            </div>
+            <div class="tile bg-green">
+                <div class="tile-body">
+                    <i class="fa fa-cloud-upload"></i>
+                </div>
+                <div class="tile-object">
+                    <div class="name">
+                        Ortam
+                    </div>
+                    <div class="number">
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tile selected bg-red">
+                <div class="corner">
+                </div>
+                <div class="tile-body">
+                    <i class="fa fa-user"></i>
+                </div>
+                <div class="tile-object">
+                    <div class="name">
+                        Kullanıcılar
+                    </div>
+                    <div class="number">
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tile bg-yellow selected">
+                <div class="corner">
+                </div>
+                <div class="check">
+                </div>
+                <div class="tile-body">
+                    <i class="fa fa-cogs"></i>
+                </div>
+                <div class="tile-object">
+                    <div class="name">
+                        Site Ayarları
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        
+        
+    </div>
+    <!-- END DASHBOARD STATS -->
+    <div class="clearfix">
+    </div>    
+</div>

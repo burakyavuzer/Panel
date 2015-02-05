@@ -1,0 +1,181 @@
+﻿@{
+    ViewBag.Title = "Sayfa Ekle";
+    Layout = "~/Areas/Backoffice/Views/Shared/_BackofficeMaster.cshtml";
+
+    var diller = Yeni_Panel_2015.Areas.Backoffice.Classes.GlobalQuery.Diller("WHERE SELECTED=1"); // Bu alanda where sorgusu gönderilebilir.
+    var listele = new List<Yeni_Panel_2015.Classes.Properties.Degiskenler>();
+    listele = Yeni_Panel_2015.Areas.Backoffice.Classes.Pages.SayfaListele("");
+    <script src="~/Scripts/jquery-1.8.2.min.js"></script>
+    <script src="/ckfinder/ckfinder.js"></script>
+    <script src="/ckeditor/ckeditor.js"></script>
+}
+
+<div class="page-content">
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Sayfalar <small>yeni sayfa ekle</small>
+            </h3>
+            <ul class="page-breadcrumb breadcrumb">
+
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="/Backoffice/Index">
+                        Başlangıç
+                    </a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="/Backoffice/Sayfalar">
+                        Sayfalar
+                    </a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="#">
+                        Sayfa Ekle
+                    </a>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+    <!-- BEGIN PAGE CONTENT-->
+    <div class="row">
+        <div class="col-md-12">
+          
+            <div class="tabbable tabbable-custom boxless tabbable-reversed">
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a href="#tab_0" data-toggle="tab">
+                            Genel
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div id="AjaxPostBack"></div>                    
+                    <div class="tab-pane active" id="tab_0">                        
+                        <div class="portlet box green ">
+                            
+                            <div class="portlet-title">
+                                <div class="caption">
+                                    <i class="fa fa-reorder"></i>Sayfa Oluştur
+                                </div>
+                            </div>
+                            <div class="portlet-body form">
+                                <!-- BEGIN FORM-->
+                                @using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal" }))
+                                {
+                                    <div class="form-body">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3">Dil Seçimi</label>
+                                            <div class="col-md-9">
+                                                <select class="form-control" name="Diller">
+                                                    @foreach (var item in diller)
+                                                    {
+                                                        <option value="@item.LANGCODE" selected="selected">@item.LANGNAME</option>
+                                                    }
+                                                </select>
+                                                <span class="help-block">
+                                                    Sadece varsayılan dil eklenecektir.
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3">Sayfa Konumlandırması</label>
+                                            <div class="col-md-9">
+                                                <select class="form-control select2_category" name="Kategori">
+                                                    <option value="0" selected="selected">-- Ana Kategori --</option>
+                                                    @foreach (var item in listele)
+                                                    {
+                                                        <option value="@item.ID">@item.PageName.Replace("<strong>", "").Replace("</strong>", "")</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3">Sayfa Adı</label>
+                                            <div class="col-md-9">
+                                                <input type="text" placeholder="örn: Hakkımızda" class="form-control" name="SayfaAdi" />
+                                                <span class="help-block">
+                                                    Oluşturacağınız sayfanın adı
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3">Sıra</label>
+                                            <div class="col-md-9">
+                                                <input type="number" placeholder="0" min="0" class="form-control" name="SiraNumarasi" />
+                                                <span class="help-block">
+                                                    Sayfanızın sıra numarası
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3">Sayfa İçeriği</label>
+                                            <div class="col-md-9">
+                                                <textarea name="sayfaIcerigi" id="editorSayfa" rows="10" cols="80"> </textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-actions fluid">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="col-md-offset-3 col-md-9">
+                                                    <button type="submit" class="btn green"><i class="fa fa-check"></i> Kaydet</button>
+                                                    <button type="button" class="btn default" onclick="window.location.href = '/Backoffice/Sayfalar';">Vazgeç</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                <!-- END FORM-->
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END PAGE CONTENT-->
+</div>
+<script>
+    $(function () {
+        $('form').submit(function () {
+
+            for (var form in CKEDITOR.instances)
+                CKEDITOR.instances[form].updateElement();
+
+            var formData = new FormData($(this)[0]);
+            $.ajax({
+                url: '@Url.Action("db_SayfaEkle", "Backoffice")',
+                type: 'POST',
+                data: formData,
+                async: false,
+                success: function (data) {
+                    $('#AjaxPostBack').html('').html(data);
+                },
+                cache: false,
+                contentType: false,
+                processData: false
+            });
+            return false;
+        });
+    });
+</script>
+<script>
+
+    jQuery(document).ready(function () {
+     
+        CKEDITOR.replace("editorSayfa");
+        CKFinder.setupCKEditor(null, "/ckfinder/");
+
+    });
+
+</script>

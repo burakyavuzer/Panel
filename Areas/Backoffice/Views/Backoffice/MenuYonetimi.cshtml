@@ -1,0 +1,262 @@
+﻿@{
+    ViewBag.Title = "Menü Yonetimi";
+    Layout = "~/Areas/Backoffice/Views/Shared/_BackofficeMaster.cshtml";
+    var url = "/Areas/Backoffice/Themes/";
+
+    string UrLang = Request.Url.Segments[3].TrimEnd('/');
+    var listele = new List<Yeni_Panel_2015.Classes.Properties.Degiskenler>();
+    listele = Yeni_Panel_2015.Areas.Backoffice.Classes.Pages.SayfaListele(UrLang);
+
+    var menuler = Yeni_Panel_2015.Areas.Backoffice.Classes.GlobalQuery.Menuler("WHERE LANG_CODE='"+UrLang+"' ORDER BY ORDER_NUM ASC");
+    var diller = Yeni_Panel_2015.Areas.Backoffice.Classes.GlobalQuery.Diller("ORDER BY ORDER_NUM ASC");
+
+}
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+<style>
+    #sortable {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+    }
+
+        #sortable li {
+            margin: 3px 3px 3px 0;
+            padding: 1px;
+            display:block;
+            width: 100%;
+            min-height:30px;
+            height: auto;
+            font-size: 13px;
+            text-align: left;
+            background-color:#F8F8F8;
+            padding:5px;
+            cursor:all-scroll;
+            border: 1px dashed #DDDDDD; 
+        }
+    .yeniyer {
+                    border: 1px dashed #000; 
+
+    }
+
+</style>
+<script>
+    $(function () {
+        $("#sortable").sortable();
+        $("#sortable").disableSelection();
+    });
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+       
+        $(function () {
+            $("#content ul").sortable({
+                placeholder: 'yeniyer',
+                opacity: 0.6,
+                cursor: 'move',
+                update: function () {
+                    var order = $(this).sortable("serialize");
+                    $.post("/Backoffice/MenuSiraGuncelle", order);
+                }
+            });
+        });
+    });
+</script>
+
+<div style="min-height:1266px !important" class="page-content">
+    <!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+      
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Menüler <small>menü yönetimi</small>
+            </h3>
+            <input id="SeciliDil" type="hidden" value="@UrLang" />
+            <ul class="page-breadcrumb breadcrumb">
+                <li class="btn-group">
+                    <button type="button" class="btn blue dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true">
+                        <span>
+                            Diğer
+                        </span>
+                        <i class="fa fa-angle-down"></i>
+                    </button>
+                    <ul class="dropdown-menu pull-right" role="menu">
+                        @foreach (var item in diller)
+                        {
+                            <li>
+                                <a href="/Backoffice/MenuYonetimi/@item.LANGCODE">
+                                    @item.LANGNAME
+                                </a>
+                            </li>
+                        }  
+                    </ul>
+                </li>
+                <li>
+                    <i class="fa fa-home"></i>
+                    <a href="index.html">
+                        Başlangıç
+                    </a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="#">
+                        Menü Yönetimi
+                    </a>
+                    <i class="fa fa-angle-right"></i>
+                </li>
+                <li>
+                    <a href="#">
+                        Menüler
+                    </a>
+                </li>
+            </ul>
+            <!-- END PAGE TITLE & BREADCRUMB-->
+        </div>
+    </div>
+    <!-- END PAGE HEADER-->
+    <!-- BEGIN PAGE CONTENT-->
+    <div class="row">
+        <div class="col-md-3">
+            <div class="panel-group accordion scrollable" id="accordion2">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapse_2_1">
+                                Sayfalar
+                            </a>
+                        </h4>
+                    </div>
+                    <div style="height: auto;" id="collapse_2_1" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                            <select class="form-control select2_category" name="Sayfa" id="Sayfa">
+                                @foreach (var item in listele)
+                                {
+                                    var sayfa = Yeni_Panel_2015.Areas.Backoffice.Classes.Pages.SayfaGetir("WHERE ID='" + item.ID + "'");
+                                    <option value="@sayfa.ID" title="@sayfa.PageName" data-url="@sayfa.PAGEURL">@item.PageName.Replace("<strong>", "").Replace("</strong>", "")</option>
+                                }
+                            </select>
+                            <button type="button" style="margin-top:10px;" class="btn green" onclick="SayfaMenuyeAktar();">Menüye ekle</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion2" href="#collapse_2_2">
+                                Bağlantılar
+                            </a>
+                        </h4>
+                    </div>
+                    <div style="height: 0px;" id="collapse_2_2" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <input placeholder="Menü adı" class="form-control" name="MenuAdi" id="MenuAdi" type="text">
+                            <input placeholder="Bağlantı adresi" class="form-control" style="margin-top:10px;" name="URL" id="URL" type="text">
+                            <button type="button" style="margin-top:10px;" class="btn green" onclick="BaglantiMenuyeAktar();">Menüye ekle</button>
+                        </div>
+                    </div>
+                </div>              
+                
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="portlet box gray" style="border:1px solid #DDDDDD;">
+                
+                <div class="portlet-body">
+                    <div class="navbar navbar-default" role="navigation">
+                        <!-- Brand and toggle get grouped for better mobile display -->
+                        <div class="navbar-header">
+                            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                                <span class="sr-only">
+                                    Toggle navigation
+                                </span>
+                                <span class="fa fa-bar">
+                                </span>
+                                <span class="fa fa-bar">
+                                </span>
+                                <span class="fa fa-bar">
+                                </span>
+                            </button>
+                            <a class="navbar-brand" href="#">
+                                Menü ismi
+                            </a>
+                        </div>
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+                        <div class="collapse navbar-collapse navbar-ex1-collapse">
+
+                            <form class="navbar-form navbar-left" role="search">
+                                <div class="form-group">
+                                    <input class="form-control" placeholder="Menü adı" value="Site Menüsü" type="text">
+                                </div>
+                                <button type="button" class="btn blue" onclick="Kaydet();">Menüyü kaydet</button>
+                            </form>
+                        </div>
+                        <!-- /.navbar-collapse -->
+                    </div>
+                    <h4>Menü yapısı</h4>
+                    <p>
+
+                        Her öğeyi tercih ettiğiniz sıraya taşıyın. Öğenin sağında yer alan ok tuşuna basarak daha fazla seçenek ortaya çıkartabilirsiniz.
+                    </p>
+                    <div id="content">
+                        <ul id="sortable">
+                            @foreach (var item in menuler)
+                            {
+                                <li id="order_@item.ID" data-id="@item.CATID" data-value="@item.NAME" data-title="@item.EXTERNAL" data-url="@item.PAGEURL" class="placeholder">@item.NAME <a href="javascript:void(0)" onclick="Kaldir(@item.ID);" style="float:right">[Kaldır]</a></li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+                </div>            
+        </div>
+    </div>
+    <!-- END PAGE CONTENT-->
+</div>
+
+<script>
+    function SayfaMenuyeAktar() {
+
+        var GelenVeriID = $("#Sayfa").val();
+        var GelenVeriDATA = $("#Sayfa option:selected").attr("title");
+        var GelenVeriURL = $("#Sayfa option:selected").attr("data-url");
+        var GelenVeriEXT = $("#Sayfa option:selected").attr("data-title");
+
+        $("#sortable").append("<li id='order_" + GelenVeriID + "' data-id='" + GelenVeriID + "' data-title='0' data-value='" + GelenVeriDATA + "' data-url='" + GelenVeriURL + "' class='placeholder'>" + GelenVeriDATA + "</li>");
+    }
+
+    function BaglantiMenuyeAktar() {
+
+        var GelenVeriID = "0";
+        var GelenVeriDATA = $("#MenuAdi").val();
+        var GelenVeriURL = $("#URL").val();
+
+        $("#sortable").append("<li id='order_" + GelenVeriID + "' data-id='" + GelenVeriID + "' data-title='1' data-value='" + GelenVeriDATA + "' data-url='" + GelenVeriURL + "' class='placeholder'>" + GelenVeriDATA + "</li>");
+    }
+
+    function Kaydet() {
+        var values = $('#content li').map(function () {
+            return $(this).attr('data-value') + ":" + $(this).attr('data-id') + ":" + $(this).attr('data-url')+ ":" + $(this).attr('data-title');
+        });
+
+        var s = '(' + values.get().join(',') + ')';
+       
+        var dil = $("#SeciliDil").val();
+
+        $.post("/Backoffice/MenuKaydet", { MenuAdi: s, LangCode:dil }, function (data) {
+            window.location.href = '/Backoffice/MenuYonetimi/'+dil+'';
+        });
+    }
+
+    function Kaldir(ID) {
+
+        var dil = $("#SeciliDil").val();
+        $.post("/Backoffice/MenuSil", { MenuID: ID }, function (data) {
+           
+            window.location.href = '/Backoffice/MenuYonetimi/'+dil+'';
+        });
+    }
+
+</script>

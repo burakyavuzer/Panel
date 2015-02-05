@@ -1,0 +1,57 @@
+﻿@{
+    Layout = null;
+    string lang_code = HttpContext.Current.Session["site_LANG"].ToString(); // Varsayılan dil'in kodu.
+
+    var menu = Yeni_Panel_2015.Areas.Backoffice.Classes.GlobalQuery.Menuler("ORDER BY ORDER_NUM ASC");
+}
+
+<div class="navbar-collapse collapse">
+    <ul class="nav navbar-nav">
+        @foreach (var item in menu)
+        {
+            if (item.EXTERNAL == "1")
+            {
+                <li><a href="/@lang_code/@item.PAGEURL">@item.NAME</a></li>
+            }
+            else
+            {
+                var altmenu = Yeni_Panel_2015.Areas.Backoffice.Classes.Pages.Sayfalar("WHERE CAT_ID='" + item.CATID + "' AND LANG_CODE='" + lang_code + "'");
+                if (altmenu.Count > 0)
+                {
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="0" data-close-others="false" href="#">
+                            @item.NAME
+                            <i class="fa fa-angle-down"></i>
+                        </a>
+                        <ul class="dropdown-menu">
+                            @foreach (var alt in altmenu)
+                            {
+                                <li><a href="@alt.PAGEURL">@alt.PageName</a></li>
+                            }
+                        </ul>
+                    </li>
+                }
+                else
+                {
+                    <li><a href="@item.PAGEURL">@item.NAME</a></li>
+                }
+            }
+
+
+        }
+        <li class="menu-search">
+            <span class="sep"></span>
+            <i class="fa fa-search search-btn"></i>
+            <div class="search-box">
+                <form action="#">
+                    <div class="input-group input-large">
+                        <input class="form-control" type="text" placeholder="Site içi arama...">
+                        <span class="input-group-btn">
+                            <button type="submit" class="btn theme-btn">Ara</button>
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </li>
+    </ul>
+</div>
